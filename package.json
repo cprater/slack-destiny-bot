@@ -1,0 +1,22 @@
+{
+  "name": "slack-destiny-bot",
+  "version": "1.0.1",
+  "description": "Slack integrated hubot to interact (readonly) with the Bungie Destiny API",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cprater/request.git"
+  },
+  "author": "Chris Prater <cprater23@gmai.com>",
+  "license": "ISC",
+  "dependencies": {
+    "coffee-script": "^1.10.0",
+    "dotenv": "^1.2.0",
+    "promise.coffee": "^1.0.6",
+    "request": "^2.64.0"
+  },
+  "readme": "An integration to interact (readonly) with the Bungie Destiny api via the slack adapter of hubot. Requires an existing slack-hubot integration to operate"
+}
