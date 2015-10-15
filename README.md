@@ -18,7 +18,7 @@ COMMANDS
 * `dinklebot vendor xur` - Returns Xur's Inventory or a warning when he isn't available
 
 ## Installation
-You will need to have hubot setup with the slack adapter
+You will need to have [hubot](https://hubot.github.com/) setup with the [slack-adapter](https://github.com/slackhq/hubot-slack)
 
 Run the following command 
 
@@ -33,7 +33,7 @@ file (you may need to create this file).
 
     ["slack-destiny-bot"]
 
-You will need to get a `BUNGIE_API_KEY` which you can get here
+You will need to get a `BUNGIE_API_KEY` which you can get [here](https://www.bungie.net/en/User/API)
 
 You will need to set the key as a config variable wherever you plan to host your hubot
 Mine is hosted on heroku so I use the following command
