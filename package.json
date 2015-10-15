@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cprater/request.git"
+    "url": "https://github.com/cprater/slack-destiny-bot"
   },
   "author": "Chris Prater <cprater23@gmai.com>",
   "license": "ISC",
