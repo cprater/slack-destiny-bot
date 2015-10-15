@@ -12,10 +12,10 @@ There are a few commands that return information about players, at this point it
 COMMANDS
 ---
 
-* `dinklebot armory <gamertag>` - Returns that players Grimoire Score.
-* `dinklebot played <gamertag>` - Returns that players Last played character and lightlevel
-* `dinklebot inventory <gamertag>` - Returns that players Last played character's equipped inventory
-* `dinklebot vendor xur` - Returns Xur's Inventory or a warning when he isn't available
+* `<bot-name> armory <gamertag>` - Returns that players Grimoire Score.
+* `<bot-name> played <gamertag>` - Returns that players Last played character and lightlevel
+* `<bot-name> inventory <gamertag>` - Returns that players Last played character's equipped inventory
+* `<bot-name> vendor xur` - Returns Xur's Inventory or a warning when he isn't available
 
 ## Installation
 You will need to have [hubot](https://hubot.github.com/) setup with the [slack-adapter](https://github.com/slackhq/hubot-slack)
