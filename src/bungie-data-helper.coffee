@@ -7,11 +7,37 @@ class DataHelper
     @fetchVendorDefs (error, response, body) =>
       @vendorDefs = JSON.parse(body)
 
+  'serializeFromApi': (item, defs) ->
+    rarityColor =
+      Uncommon: '#f5f5f5'
+      Common: '#2f6b3c'
+      Rare: '#557f9e'
+      Legendary: '#4e3263'
+      Exotic: '#ceae32'
+
+    hash = item.itemHash
+    defData = defs[hash]
+
+    prefix = 'http://www.bungie.net'
+    iconSuffix = defData.icon
+    itemSuffix = '/en/Armory/Detail?item='+hash
+
+    itemName: defData.itemName
+    itemDescription: defData.itemDescription
+    itemTypeName: defData.itemTypeName
+    rarity: defData.tierTypeName
+    color: rarityColor[defData.tierTypeName]
+    iconLink: prefix + iconSuffix
+    itemLink: prefix + itemSuffix
+    primaryStat: item.primaryStat
+    stats: item.stats
+
   'parseItemsForAttachment': (items) ->
-    item.map(item) -> @parseItemAttachment(item)
+    items.map (item) => @parseItemAttachment(item)
 
   'parseItemAttachment': (item) ->
-    statFields = @buildStats(item.stats, item.primaryStat) || []
+    hasStats = item.stats
+    statFields = if hasStats then @buildStats(item.stats, item.primaryStat) else []
 
     fallback: item.itemDescription
     title: item.itemName
@@ -24,13 +50,7 @@ class DataHelper
   'buildStats': (statsData, primaryData) ->
     defs = @statDefs
 
-    primaryFound = defs[primaryData.statHash] || {}
-    primaryStat =
-      title: primaryFound.statName
-      value: primaryData.value
-      short: false
-
-    foundStats = statsData.map(stat) ->
+    foundStats = statsData.map (stat) ->
       found = defs[stat.statHash]
       return if not found
 
@@ -38,9 +58,17 @@ class DataHelper
       value: stat.value
       short: true
 
-    foundStats.unshift primaryStat if primaryFound
+    primaryFound = primaryData and defs[primaryData.statHash]
 
-    foundStats.filter(x) -> x
+    if primaryFound
+      primaryStat =
+        title: primaryFound.statName
+        value: primaryData.value
+        short: false
+
+      foundStats.unshift(primaryStat)
+
+    foundStats.filter (x) -> x
 
   'fetchVendorDefs': (callback) ->
     options =
@@ -59,6 +87,7 @@ class DataHelper
     request(options, callback)
 
 module.exports = DataHelper
+
 
 
 
