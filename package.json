@@ -1,6 +1,6 @@
 {
   "name": "slack-destiny-bot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Slack integrated hubot to interact (readonly) with the Bungie Destiny API",
   "main": "index.coffee",
   "scripts": {
