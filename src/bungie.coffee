@@ -105,7 +105,8 @@ getCharacterId = (bot, playerId) ->
 getCharacterInventory = (bot, playerId, characterId) ->
   deferred = new Deferred()
   endpoint = '1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
-  params = 'definitions=true'
+  params =
+    definitions: true
 
   callback = (response) ->
     definitions = response.definitions.items
@@ -153,7 +154,8 @@ getLastCharacter = (bot, playerId) ->
 getXurInventory = (bot) ->
   deferred = new Deferred()
   endpoint = 'Advisors/Xur'
-  params = 'definitions=true'
+  params =
+    definitions: true
   callback = (response) ->
     deferred.resolve(response)
 
@@ -176,7 +178,7 @@ makeRequest = (bot, endpoint, callback, params) ->
   BUNGIE_API_KEY = process.env.BUNGIE_API_KEY
   baseUrl = 'https://www.bungie.net/Platform/Destiny/'
   trailing = '/'
-  queryParams = if params then '?'+params else ''
+  queryParams = if params then '?'+(k + "=" + encodeURIComponent(v) for k, v of params).join '&' else ''
   url = baseUrl+endpoint+trailing+queryParams
 
   console.log("url")
