@@ -25,6 +25,19 @@ module.exports = (robot) ->
       getGrimoireScore(res, playerId).then (grimoireScore) ->
         res.send playerName+'\'s Grimoire Score is: '+grimoireScore
 
+  # Returns a grimoire score for a gamertag
+  robot.respond /q (.*)/i, (res) =>
+    query = res.match[1]
+
+    searchArmory(res, query).then (response) ->
+      items = response.map (item) -> dataHelper.parseItemAttachment(item)
+
+      payload =
+        message: res.message
+        attachments: items
+
+      robot.emit 'slack-attachment', payload
+
   # Returns an inventory object of last played character for a gamertag
   robot.respond /played (.*)/i, (res) ->
     playerName = res.match[1]
@@ -171,6 +184,24 @@ getGrimoireScore = (bot, memberId) ->
     score = response.data.score
     deferred.resolve(score)
 
+  deferred.promise
+
+#Search Armory
+searchArmory = (bot, query) ->
+  deferred = new Deferred()
+  endpoint = 'Explorer/Items'
+  params =
+    definitions: true
+    name: query
+
+  callback = (response) ->
+    definitions = response.definitions.items
+
+    items = response.data.itemHashes[0..2].map (item) -> dataHelper.serializeFromApi({itemHash: item}, definitions)
+
+    deferred.resolve(items)
+
+  makeRequest(bot, endpoint, callback, params)
   deferred.promise
 
 # Sends GET request from an endpoint, needs a success callback
