@@ -199,7 +199,11 @@ searchArmory = (bot, query) ->
 
     items = response.data.itemHashes[0..2].map (item) -> dataHelper.serializeFromApi({itemHash: item}, definitions)
 
-    deferred.resolve(items)
+    if items.length
+      deferred.resolve(items)
+    else
+      bot.send 'No items found for query `' + query + '`'
+      deferred.reject()
 
   makeRequest(bot, endpoint, callback, params)
   deferred.promise
