@@ -25,6 +25,19 @@ module.exports = (robot) ->
       getGrimoireScore(res, playerId).then (grimoireScore) ->
         res.send playerName+'\'s Grimoire Score is: '+grimoireScore
 
+  # Returns a grimoire score for a gamertag
+  robot.respond /q (.*)/i, (res) =>
+    query = res.match[1]
+
+    searchArmory(res, query).then (response) ->
+      items = response.map (item) -> dataHelper.parseItemAttachment(item)
+
+      payload =
+        message: res.message
+        attachments: items
+
+      robot.emit 'slack-attachment', payload
+
   # Returns an inventory object of last played character for a gamertag
   robot.respond /played (.*)/i, (res) ->
     playerName = res.match[1]
@@ -105,7 +118,8 @@ getCharacterId = (bot, playerId) ->
 getCharacterInventory = (bot, playerId, characterId) ->
   deferred = new Deferred()
   endpoint = '1/Account/'+playerId+'/Character/'+characterId+'/Inventory'
-  params = 'definitions=true'
+  params =
+    definitions: true
 
   callback = (response) ->
     definitions = response.definitions.items
@@ -153,7 +167,8 @@ getLastCharacter = (bot, playerId) ->
 getXurInventory = (bot) ->
   deferred = new Deferred()
   endpoint = 'Advisors/Xur'
-  params = 'definitions=true'
+  params =
+    definitions: true
   callback = (response) ->
     deferred.resolve(response)
 
@@ -171,12 +186,34 @@ getGrimoireScore = (bot, memberId) ->
 
   deferred.promise
 
+#Search Armory
+searchArmory = (bot, query) ->
+  deferred = new Deferred()
+  endpoint = 'Explorer/Items'
+  params =
+    definitions: true
+    name: query
+
+  callback = (response) ->
+    definitions = response.definitions.items
+
+    items = response.data.itemHashes[0..2].map (item) -> dataHelper.serializeFromApi({itemHash: item}, definitions)
+
+    if items.length
+      deferred.resolve(items)
+    else
+      bot.send 'No items found for query `' + query + '`'
+      deferred.reject()
+
+  makeRequest(bot, endpoint, callback, params)
+  deferred.promise
+
 # Sends GET request from an endpoint, needs a success callback
 makeRequest = (bot, endpoint, callback, params) ->
   BUNGIE_API_KEY = process.env.BUNGIE_API_KEY
   baseUrl = 'https://www.bungie.net/Platform/Destiny/'
   trailing = '/'
-  queryParams = if params then '?'+params else ''
+  queryParams = if params then '?'+(k + "=" + encodeURIComponent(v) for k, v of params).join '&' else ''
   url = baseUrl+endpoint+trailing+queryParams
 
   console.log("url")
